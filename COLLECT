@@ -1,3 +1,18 @@
+def extract_words(str) :
+
+#Permet de retourner une liste de str, chaque élément de la liste étant un mot dans l'hypothèse
+#où les mots sont séparés par "/n" dans la chaîne initiale (saut de ligne dans le fichier texte.
+
+    l=[]
+    i=0
+    for j in range(0,len(str)):
+        if str[j]== "/" :
+            l.append(str[i:j])
+            i=j+2
+    l.append(str[i:len(str)])
+    print(l)
+
+
 def get_candidate_queries(num_candidate, file_path):
     """
     Generate and return a list of string queries for the search Twitter API from the file file_path_num_candidate.txt
@@ -8,14 +23,9 @@ def get_candidate_queries(num_candidate, file_path):
     """
     try :
         with open(file_path,'r') as keyword_file :
-        content=keyword_file.read()
-        print(content)
-        l=[]
-        for k in range (0,len(content)) :
-            i=0
-        while content[i]!='/' :
-            i+=1
-        l.append(content[i:j].strip())
+            content=keyword_file.read()
+            print(content)
+            extract_words(content)
 
     except IOError:
         print("The file cannot be read")
