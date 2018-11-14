@@ -2,14 +2,14 @@ from twitter_collect import twitter_connection_setup
 import tweepy
 
 ###API Search : Récupérer des tweets historiques (7jours précédents) à l'aide de mots clés
-def collect():
+def collect(keyword):
     connexion = twitter_connection_setup.twitter_setup()
-    tweets = connexion.search("Macron",language="french",rpp=100)
+    tweets = connexion.search(keyword,language="french",rpp=100)
     print(tweets)
     for tweet in tweets:
         print(tweet.text)
 
-#collect()
+#collect("Macron")
 
 
 
