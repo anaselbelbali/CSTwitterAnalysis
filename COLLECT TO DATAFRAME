@@ -30,3 +30,18 @@ def maxRT() :
     print("Number of retweets: {}".format(rt_max))
     print("{} characters.\n".format(df['len'][rt]))
 #maxRT()
+
+###VISUALISATION DE L EVOLUTION D UNE CARACTERISTIQUE
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+df=collect_to_pandas_dataframe()
+tfav = pd.Series(df['Likes'].values, index=df['Date'])
+tret = pd.Series(df['RTs'].values, index=df['Date'])
+
+# Likes vs retweets visualization:
+tfav.plot(figsize=(16,4), label="Likes", legend=True)
+tret.plot(figsize=(16,4), label="Retweets", legend=True)
+
+plt.show()
