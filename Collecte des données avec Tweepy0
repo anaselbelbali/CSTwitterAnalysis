@@ -62,6 +62,14 @@ get_candidate_queries(r'C:\Users\Gros\Desktop\testcodingweek.txt')
 
 
 
+def get_tweets_from_candidates_search_queries(queries, twitter_api) :
+#étant donnée une liste queries de requêtes (de type search) et une instance 
+#de connexion twitter_api récupére et renvoie les tweets répondant aux différentes requêtes.
+    try :
+        for k in queries :
+            print(collect(queries[k],twitter_api)
+    except TweepError :
+        print("Twitter detected an error")
 
 
 ###LANCER UNE COLLECTE
