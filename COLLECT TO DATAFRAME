@@ -79,3 +79,23 @@ def opinion_candidat(keyword) :
     print(opinion)
 
 #opinion_candidat('Macron')
+
+#Pourcentages des tweets négatifs/positifs
+def pos_vs_neg_tweets(keyword) :
+    data=collect_to_pandas_dataframe_2(keyword)
+    tweets=data['tweet_textual_content'].values
+    pos,neg,neutral=0,0,0
+    for tweet in tweets :
+        tweet=TextBlob(tweet)
+        tweet.translate(to="en")
+        if tweet.sentiment.polarity >= 0 :
+            pos+=1
+        elif tweet.sentiment.polarity==0 :
+            neutral+=1
+        else :
+            neg+=1
+    print("Percentage of positive tweets: {}%".format(pos*100/len(data['tweet_textual_content'])))
+    print("Percentage of neutral tweets: {}%".format(neutral*100/len(data['tweet_textual_content'])))
+    print("Percentage de negative tweets: {}%".format(neg*100/len(data['tweet_textual_content'])))
+
+#pos_vs_neg_tweets('Saez')
