@@ -1,0 +1,32 @@
+#EXTRAIRE INFORMATIONS PERTINENTES TWEETS (JSON)
+
+import json
+import pandas as pd
+from twitter_collect import twitter_connection_setup
+import numpy as np
+
+
+def collect_to_pandas_dataframe() :
+    connexion=twitter_connection_setup.twitter_setup()
+    tweets=connexion.search("@EmmanuelMacron", language='fr',rpp=100)
+    data=pd.DataFrame(data=[tweet.text for tweet in tweets], columns=['tweet_textual_content'])
+    data['len']  = np.array([len(tweet.text) for tweet in tweets])
+    data['ID']   = np.array([tweet.id for tweet in tweets])
+    data['Date'] = np.array([tweet.created_at for tweet in tweets])
+    data['Source'] = np.array([tweet.source for tweet in tweets])
+    data['Likes']  = np.array([tweet.favorite_count for tweet in tweets])
+    data['RTs']    = np.array([tweet.retweet_count for tweet in tweets])
+    print(data)
+    #print(tweets)
+    return(data)
+
+collect_to_pandas_dataframe()
+
+def maxRT() :
+    df=collect_to_pandas_dataframe()
+    rt_max=np.max(df['RTs'])
+    rt=df[df.RTs==rt_max].index[0]
+    print("The tweet with more retweets is: \n{}".format(df['tweet_textual_content'][rt]))
+    print("Number of retweets: {}".format(rt_max))
+    print("{} characters.\n".format(df['len'][rt]))
+#maxRT()
