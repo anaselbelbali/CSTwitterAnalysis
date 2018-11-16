@@ -6,9 +6,9 @@ from twitter_collect import twitter_connection_setup
 import numpy as np
 
 
-def collect_to_pandas_dataframe() :
+def collect_to_pandas_dataframe(id) :
     connexion=twitter_connection_setup.twitter_setup()
-    tweets=connexion.search("@EmmanuelMacron", language='fr',rpp=100)
+    tweets=connexion.search(id, count=200)
     data=pd.DataFrame(data=[tweet.text for tweet in tweets], columns=['tweet_textual_content'])
     data['len']  = np.array([len(tweet.text) for tweet in tweets])
     data['ID']   = np.array([tweet.id for tweet in tweets])
@@ -20,28 +20,62 @@ def collect_to_pandas_dataframe() :
     #print(tweets)
     return(data)
 
-collect_to_pandas_dataframe()
+def collect_to_pandas_dataframe_2(keyword) :
+    connexion=twitter_connection_setup.twitter_setup()
+    tweets=connexion.search(keyword,language="french",rpp=100)
+    data=pd.DataFrame(data=[tweet.text for tweet in tweets], columns=['tweet_textual_content'])
+    data['len']  = np.array([len(tweet.text) for tweet in tweets])
+    data['ID']   = np.array([tweet.id for tweet in tweets])
+    data['Date'] = np.array([tweet.created_at for tweet in tweets])
+    data['Source'] = np.array([tweet.source for tweet in tweets])
+    data['Likes']  = np.array([tweet.favorite_count for tweet in tweets])
+    data['RTs']    = np.array([tweet.retweet_count for tweet in tweets])
+    print(data)
+    #print(tweets)
+    return(data)
 
-def maxRT() :
-    df=collect_to_pandas_dataframe()
+def maxRT(id) :
+    df=collect_to_pandas_dataframe(id)
     rt_max=np.max(df['RTs'])
     rt=df[df.RTs==rt_max].index[0]
     print("The tweet with more retweets is: \n{}".format(df['tweet_textual_content'][rt]))
     print("Number of retweets: {}".format(rt_max))
     print("{} characters.\n".format(df['len'][rt]))
-#maxRT()
+#maxRT(80820758)
+
 
 ###VISUALISATION DE L EVOLUTION D UNE CARACTERISTIQUE
 
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df=collect_to_pandas_dataframe()
-tfav = pd.Series(df['Likes'].values, index=df['Date'])
-tret = pd.Series(df['RTs'].values, index=df['Date'])
+def likes_vs_retweets_visualization(id) :
+    df=collect_to_pandas_dataframe(id)
+    tfav = pd.Series(df['Likes'].values, index=df['Date'])
+    tret = pd.Series(df['RTs'].values, index=df['Date'])
+    # Likes vs retweets visualization:
+    tfav.plot(figsize=(16,4), label="Likes", legend=True)
+    tret.plot(figsize=(16,4), label="Retweets", legend=True)
+    plt.show()
 
-# Likes vs retweets visualization:
-tfav.plot(figsize=(16,4), label="Likes", legend=True)
-tret.plot(figsize=(16,4), label="Retweets", legend=True)
 
-plt.show()
+#likes_vs_retweets_visualization(80820758)
+
+###ANALYSE DE TEXTES ET SENTIMENTS (TEXTBLOB)
+
+from textblob import TextBlob
+
+#Moyenne de l'opinion d'un candidat
+def opinion_candidat(keyword) :
+    data=collect_to_pandas_dataframe_2(keyword)
+    print(data['tweet_textual_content'].values)
+    tweets=data['tweet_textual_content'].values
+    opinion=0
+    for tweet in tweets :
+        tweet=TextBlob(tweet)
+        #tweet.translate(to="en")
+        opinion+=tweet.sentiment.polarity
+    opinion=opinion/len(tweets)
+    print(opinion)
+
+#opinion_candidat('Macron')
